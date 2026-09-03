@@ -1,1 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>婚礼邀请函</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+:root {
+  --red-deep: #8B1A1A;
+  --red-main: #A02020;
+  --red-light: #B23A3A;
+  --cream: #F5E6D3;
+  --cream-light: #FAF0E6;
+  --cream-dark: #E8D5BE;
+  --gold: #C9A96E;
+  --text-dark: #3D2B1F;
+  --text-brown: #6B4F3A;
+  --text-light: #F5E6D3;
+  --serif: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  --sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--cream-light);
+  color: var(--text-dark);
+  line-height: 1.8;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page-wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--cream-light);
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,0,0,0.08);
+}
+
+.section { width: 100%; position: relative; overflow: hidden; }
+.section-cream { background: var(--cream-light); }
+.section-red { background: var(--red-deep); color: var(--text-light); }
+
+.rings-icon { width: 80px; height: 50px; margin: 0 auto; display: block; }
+.rings-icon svg { width: 100%; height: 100%; }
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ========== 封面 ========== */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60px 30px 0;
+  position: relative;
+}
+.cover::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(139,26,26,0.95) 0%, rgba(139,26,26,0.85) 100%);
+  z-index: 1;
+}
+.cover-bg {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-size: cover; background-position: center;
+  z-index: 0; filter: brightness(0.7);
+}
+.cover-content { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%; }
+.cover-xi {
+  font-family: var(--serif); font-size: 72px; font-weight: 900;
+  color: var(--cream); letter-spacing: 8px; margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.cover-subtitle {
+  font-family: var(--serif); font-size: 20px; color: var(--cream);
+  letter-spacing: 6px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;
+}
+.cover-subtitle .heart { color: #E85D5D; font-size: 16px; }
+.cover-rings { margin-bottom: 28px; }
+.cover-names {
+  font-family: var(--serif); font-size: 26px; color: var(--cream);
+  letter-spacing: 4px; margin-bottom: 40px;
+}
+.cover-names .dot { margin: 0 16px; color: var(--gold); }
+.cover-photo {
+  width: 100%; max-width: 340px; aspect-ratio: 3/4; border-radius: 8px;
+  overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  border: 3px solid rgba(201,169,110,0.4);
+}
+.cover-photo img { width: 100%; height: 100%; object-fit: cover; }
+.cover-scroll-hint {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  z-index: 2; color: var(--cream); font-size: 12px; letter-spacing: 3px;
+  opacity: 0.7; animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ========== 邀请函标题 ========== */
+.invite-title { padding: 0 0 50px; }
+.invite-detail-img { width: 100%; height: 180px; overflow: hidden; }
+.invite-detail-img img { width: 100%; height: 100%; object-fit: cover; }
+.invite-title-text { text-align: center; padding: 40px 30px 30px; }
+.invite-title-main {
+  font-family: var(--serif); font-size: 32px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: 8px; margin-bottom: 8px;
+}
+.invite-title-en {
+  font-family: var(--serif); font-size: 16px; color: var(--red-main);
+  letter-spacing: 4px; font-style: italic; margin-bottom: 30px;
+}
+.arch-photo { width: 280px; margin: 0 auto 30px; position: relative; }
+.arch-photo::before {
+  content: ''; position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px;
+  border: 2px solid var(--red-main); border-radius: 140px 140px 8px 8px; opacity: 0.3;
+}
+.arch-photo-inner {
+  width: 100%; aspect-ratio: 3/4; border-radius: 140px 140px 8px 8px;
+  overflow: hidden; border: 3px solid var(--red-main);
+}
+.arch-photo-inner img { width: 100%; height: 100%; object-fit: cover; }
+.invite-poem {
+  text-align: center; font-family: var(--serif); color: var(--text-brown);
+  font-size: 15px; line-height: 2.2; letter-spacing: 2px;
+}
+
+/* ========== 新人介绍 ========== */
+.intro-section { padding: 50px 30px; }
+.poem-block { text-align: center; margin-bottom: 36px; }
+.poem-block p {
+  font-family: var(--serif); font-size: 15px; color: var(--text-brown);
+  line-height: 2.2; letter-spacing: 1px; margin-bottom: 4px;
+}
+.poem-block .poem-title { font-size: 17px; color: var(--text-dark); font-weight: 600; margin-bottom: 6px; }
+.couple-photos { display: flex; gap: 16px; margin-bottom: 20px; }
+.couple-photo-item { flex: 1; text-align: center; }
+.couple-photo-frame {
+  width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+  margin-bottom: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+.couple-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+.couple-label {
+  font-family: var(--serif); font-size: 14px; color: var(--red-main);
+  letter-spacing: 3px; margin-bottom: 4px; display: flex; align-items: center;
+  justify-content: center; gap: 6px;
+}
+.couple-label .heart-mini { color: #E85D5D; font-size: 10px; }
+.couple-name {
+  font-family: var(--serif); font-size: 22px; color: var(--text-dark);
+  letter-spacing: 3px; font-weight: 600;
+}
+
+/* ========== 婚礼信息 ========== */
+.wedding-info { padding: 30px 30px 50px; }
+.info-block { text-align: center; margin-bottom: 36px; }
+.info-label {
+  font-family: var(--serif); font-size: 13px; color: var(--red-main);
+  letter-spacing: 4px; margin-bottom: 8px;
+}
+.info-title {
+  font-family: var(--serif); font-size: 22px; color: var(--text-dark);
+  font-weight: 700; letter-spacing: 4px; margin-bottom: 14px;
+}
+.info-detail {
+  font-family: var(--sans); font-size: 16px; color: var(--text-brown);
+  line-height: 2; letter-spacing: 1px;
+}
+.info-detail .date-main { font-size: 18px; font-weight: 500; color: var(--text-dark); }
+.banner-photo {
+  width: 100%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden;
+  margin-top: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+.banner-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== 誓言页 ========== */
+.oath-section { padding: 0 0 50px; }
+.oath-top-photo { width: 100%; height: 280px; overflow: hidden; }
+.oath-top-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+.oath-content { padding: 40px 30px 0; text-align: center; }
+.oath-rings { margin-bottom: 20px; }
+.oath-title {
+  font-family: var(--serif); font-size: 26px; color: var(--red-main);
+  letter-spacing: 6px; margin-bottom: 24px; font-weight: 700;
+}
+.oath-text {
+  font-family: var(--serif); font-size: 15px; color: var(--text-brown);
+  line-height: 2.4; letter-spacing: 1px; margin-bottom: 30px;
+}
+.oath-photo {
+  width: 100%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+.oath-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== 照片展示 ========== */
+.gallery-section { padding: 20px 30px 50px; }
+.gallery-large {
+  width: 100%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden;
+  margin-bottom: 16px; box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+}
+.gallery-large img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-row { display: flex; gap: 16px; }
+.gallery-small {
+  flex: 1; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+.gallery-small img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== 誓言2 ========== */
+.oath2-section { padding: 0 0 50px; }
+.oath2-detail { display: flex; gap: 12px; padding: 0 30px; margin-bottom: 30px; }
+.oath2-detail-item {
+  flex: 1; aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+.oath2-detail-item img { width: 100%; height: 100%; object-fit: cover; }
+.oath2-content { padding: 10px 30px 0; text-align: center; }
+.oath2-closeup {
+  width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+  margin-top: 30px; box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+.oath2-closeup img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== 照片展示2 ========== */
+.gallery2-section { padding: 20px 30px 50px; }
+.gallery2-wide {
+  width: 100%; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden;
+  margin-bottom: 16px; box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+}
+.gallery2-wide img { width: 100%; height: 100%; object-fit: cover; }
+.gallery2-card {
+  width: 100%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.1); background: var(--cream); padding: 16px;
+}
+.gallery2-card-inner { width: 100%; height: 100%; border-radius: 6px; overflow: hidden; }
+.gallery2-card-inner img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== 日历 ========== */
+.calendar-section { padding: 0 30px 50px; }
+.calendar-top-photo {
+  width: calc(100% + 60px); height: 200px; overflow: hidden;
+  margin: 0 -30px 30px;
+}
+.calendar-top-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+.calendar-header { text-align: center; margin-bottom: 24px; }
+.calendar-month {
+  font-family: var(--serif); font-size: 48px; font-weight: 900;
+  color: var(--red-main); line-height: 1;
+}
+.calendar-month .month-small { font-size: 24px; font-weight: 400; color: var(--text-brown); }
+.calendar-year {
+  font-family: var(--serif); font-size: 20px; color: var(--text-brown);
+  letter-spacing: 4px; margin-top: 8px;
+}
+.calendar-grid { width: 100%; margin-bottom: 30px; }
+.calendar-weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+  margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--cream-dark);
+}
+.calendar-weekdays span {
+  font-family: var(--serif); font-size: 14px; color: var(--text-brown); font-weight: 600;
+}
+.calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.calendar-day {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-family: var(--sans); font-size: 15px; color: var(--text-brown); position: relative;
+}
+.calendar-day.empty { visibility: hidden; }
+.calendar-day.wedding { color: white; font-weight: 700; }
+.calendar-day.wedding::before {
+  content: ''; position: absolute; width: 34px; height: 34px;
+  background: var(--red-main); border-radius: 50%; z-index: 0;
+  box-shadow: 0 2px 8px rgba(160,32,32,0.3);
+}
+.calendar-day span { position: relative; z-index: 1; }
+.calendar-bottom-photo {
+  width: 100%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+.calendar-bottom-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ========== 回执 ========== */
+.rsvp-section { padding: 50px 30px 60px; text-align: center; }
+.rsvp-welcome {
+  font-family: var(--serif); font-size: 24px; color: var(--text-dark);
+  letter-spacing: 6px; margin-bottom: 36px; font-weight: 600;
+}
+.rsvp-form { max-width: 320px; margin: 0 auto 40px; }
+.form-group { margin-bottom: 20px; }
+.form-input {
+  width: 100%; padding: 14px 20px; border: 1.5px solid var(--red-main);
+  border-radius: 30px; background: transparent; font-family: var(--sans);
+  font-size: 15px; color: var(--text-dark); outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.form-input::placeholder { color: var(--text-brown); opacity: 0.6; }
+.form-input:focus { border-color: var(--red-deep); box-shadow: 0 0 0 3px rgba(160,32,32,0.1); }
+.form-submit {
+  width: 100%; padding: 15px; background: var(--red-main); color: var(--cream);
+  border: none; border-radius: 30px; font-family: var(--serif); font-size: 17px;
+  letter-spacing: 6px; cursor: pointer; transition: background 0.3s, transform 0.2s; margin-top: 8px;
+}
+.form-submit:hover { background: var(--red-deep); }
+.form-submit:active { transform: scale(0.98); }
+.rsvp-thanks {
+  display: none; font-family: var(--serif); font-size: 18px; color: var(--red-main);
+  letter-spacing: 3px; padding: 30px 0;
+}
+.rsvp-thanks.show { display: block; }
+.blessing {
+  font-family: var(--serif); font-size: 14px; color: var(--text-brown);
+  letter-spacing: 2px; line-height: 2; margin-top: 30px;
+}
+.blessing-heart { width: 50px; height: 45px; margin: 0 auto 16px; }
+.blessing-heart svg { width: 100%; height: 100%; }
+
+/* ========== 右上角按钮 ========== */
+.top-btn {
+  position: fixed; top: 20px; width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(139,26,26,0.8); border: 1px solid rgba(201,169,110,0.5);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  z-index: 100; backdrop-filter: blur(4px); transition: background 0.3s;
+}
+.top-btn:hover { background: rgba(139,26,26,1); }
+.top-btn svg { width: 18px; height: 18px; fill: var(--cream); }
+.music-btn { right: 20px; }
+.music-btn.playing svg { animation: spin 4s linear infinite; }
+.edit-btn { right: 70px; }
+.edit-btn.active { background: var(--gold); }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ========== 编辑模式 ========== */
+body.edit-mode .editable-text {
+  outline: 2px dashed var(--red-main);
+  outline-offset: 3px;
+  cursor: text;
+  background: rgba(160,32,32,0.05);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+body.edit-mode .editable-text:hover {
+  background: rgba(160,32,32,0.12);
+}
+body.edit-mode .editable-img {
+  position: relative;
+  cursor: pointer;
+  outline: 2px dashed var(--red-main);
+  outline-offset: 2px;
+}
+body.edit-mode .editable-img::after {
+  content: '点击更换图片';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(139,26,26,0.85);
+  color: var(--cream);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: var(--sans);
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+body.edit-mode .editable-img:hover::after {
+  background: rgba(139,26,26,1);
+}
+
+/* 编辑工具栏 */
+.edit-toolbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid #eee;
+  padding: 12px 20px;
+  display: none;
+  justify-content: center;
+  gap: 12px;
+  z-index: 200;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+body.edit-mode .edit-toolbar { display: flex; }
+body.edit-mode { padding-bottom: 70px; }
+.edit-toolbar button {
+  padding: 10px 24px;
+  border-radius: 25px;
+  border: none;
+  font-family: var(--sans);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-save { background: var(--red-main); color: white; }
+.btn-save:hover { background: var(--red-deep); }
+.btn-reset { background: #f0f0f0; color: #666; }
+.btn-reset:hover { background: #e0e0e0; }
+.btn-exit { background: var(--gold); color: white; }
+.btn-exit:hover { background: #b8965a; }
+
+/* 保存提示 */
+.save-toast {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 15px;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.save-toast.show { opacity: 1; }
+
+/* 隐藏的文件输入 */
+#fileInput { display: none; }
+
+@media (max-width: 380px) {
+  .cover-xi { font-size: 60px; }
+  .cover-names { font-size: 22px; }
+  .invite-title-main { font-size: 28px; }
+  .arch-photo { width: 240px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap" id="app"></div>
+
+<!-- 音乐按钮 -->
+<div class="top-btn music-btn" id="musicBtn" onclick="toggleMusic()">
+  <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+</div>
+
+<!-- 编辑按钮 -->
+<div class="top-btn edit-btn" id="editBtn" onclick="toggleEditMode()" title="编辑内容">
+  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+</div>
+
+<!-- 编辑工具栏 -->
+<div class="edit-toolbar">
+  <button class="btn-reset" onclick="resetAll()">恢复默认</button>
+  <button class="btn-save" onclick="saveChanges()">保存修改</button>
+  <button class="btn-exit" onclick="toggleEditMode()">完成</button>
+</div>
+
+<!-- 保存提示 -->
+<div class="save-toast" id="saveToast">已保存</div>
+
+<!-- 隐藏文件输入 -->
+<input type="file" id="fileInput" accept="image/*">
+
+<audio id="bgMusic" loop>
+  <source src="" type="audio/mpeg">
+</audio>
+
+<script>
+/* ============================================
+   默认配置 - 首次加载使用，修改后会保存到浏览器
+   ============================================ */
+const DEFAULT_CONFIG = {
+  groomName: "欧阳先生",
+  brideName: "管小姐",
+  weddingYear: 2027,
+  weddingMonth: 4,
+  weddingDay: 18,
+  weddingTime: "12:00",
+  weddingLunar: "农历三月十二",
+  weddingWeekday: "星期六",
+  location: "广东省云浮市XX酒店XX宴会厅",
+  musicUrl: "",
+  photos: {
+    cover: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    arch: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    groom: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    bride: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    banner: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    oath1: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    gallery1: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    gallery2: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    gallery3: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    detail1: "https://aka.doubaocdn.com/s/dVUtJMEo0X",
+    detail2: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    closeup: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    calendarTop: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    calendarBottom: "https://aka.doubaocdn.com/s/PwV1Szx9Kl"
+  },
+  texts: {
+    coverSubtitleLeft: "谨订此约",
+    coverSubtitleRight: "良辰共证",
+    inviteTitle: "婚礼邀请函",
+    inviteEn: "Wedding Invitation",
+    poem1: ["酝酿已久", "终将这份欢喜落于纸上"],
+    poem2: ["世间万事皆可等", "唯有与你的时光，片刻不愿迟"],
+    poem3: ["结发为约，共赴白首", "此日此时，邀你一同见证我们的黄金时刻"],
+    oath1Title: "一诺今生",
+    oath1Text: ["昔日你是山遥水阔", "如今你是灯火可亲", "往后三餐四季，岁岁年年", "春秋冷暖，皆有你在身旁"],
+    oath2Title: "岁月共长",
+    oath2Text: ["今择良辰，以爱为名", "将余生托付，与君共盟", "愿以此为约", "共赴岁月漫漫，同赏人间温柔"],
+    rsvpWelcome: "{ WELCOME }",
+    rsvpNamePlaceholder: "* 姓名",
+    rsvpCountPlaceholder: "* 赴宴人数",
+    rsvpSubmit: "提交",
+    rsvpThanks: "感谢您的祝福，期待您的莅临",
+    blessing: "愿有岁月可回首，且以深情共白头"
+  }
+};
+
+let CONFIG = loadConfig();
+let editMode = false;
+let currentImgKey = null;
+
+const RINGS_SVG = `<svg viewBox="0 0 80 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="28" cy="28" rx="18" ry="16" stroke="#C9A96E" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <ellipse cx="52" cy="25" rx="18" ry="16" stroke="#C9A96E" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <circle cx="28" cy="12" r="3" fill="#C9A96E" opacity="0.6"/>
+  <circle cx="52" cy="9" r="3" fill="#C9A96E" opacity="0.6"/>
+  <path d="M22 20 L28 16 L34 20" stroke="#C9A96E" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M46 17 L52 13 L58 17" stroke="#C9A96E" stroke-width="1" fill="none" opacity="0.5"/>
+</svg>`;
+
+const HEART_SVG = `<svg viewBox="0 0 50 45" xmlns="http://www.w3.org/2000/svg">
+  <path d="M25 42 C25 42 2 28 2 14 C2 6 8 2 15 2 C20 2 24 5 25 8 C26 5 30 2 35 2 C42 2 48 6 48 14 C48 28 25 42 25 42Z" fill="#A02020" opacity="0.8"/>
+  <text x="25" y="26" text-anchor="middle" fill="#F5E6D3" font-size="14" font-family="serif">祝</text>
+</svg>`;
+
+/* ========== 本地存储 ========== */
+function loadConfig() {
+  try {
+    const saved = localStorage.getItem('wedding_invitation_config');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+}
+
+function saveConfig() {
+  try {
+    localStorage.setItem('wedding_invitation_config', JSON.stringify(CONFIG));
+    showToast('已保存');
+  } catch(e) {
+    showToast('保存失败');
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('saveToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1500);
+}
+
+/* ========== 日历生成 ========== */
+function generateCalendar(year, month, weddingDay) {
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  let html = '<div class="calendar-weekdays">';
+  weekdays.forEach(d => html += `<span>${d}</span>`);
+  html += '</div><div class="calendar-days">';
+  for (let i = 0; i < firstDay; i++) html += '<div class="calendar-day empty"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isWedding = d === weddingDay;
+    html += `<div class="calendar-day ${isWedding ? 'wedding' : ''}"><span>${d}</span></div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+/* ========== 渲染页面 ========== */
+function render() {
+  const c = CONFIG;
+  const t = c.texts;
+  const p = c.photos;
+  const app = document.getElementById('app');
+
+  app.innerHTML = `
+    <!-- 封面 -->
+    <section class="section section-red cover fade-in">
+      <div class="cover-bg editable-img" data-img="cover" style="background-image:url('${p.cover}')" onclick="pickImage('cover')"></div>
+      <div class="cover-content">
+        <div class="cover-xi">囍</div>
+        <div class="cover-subtitle">
+          <span class="editable-text" data-text="texts.coverSubtitleLeft">${t.coverSubtitleLeft}</span>
+          <span class="heart">♥</span>
+          <span class="editable-text" data-text="texts.coverSubtitleRight">${t.coverSubtitleRight}</span>
+        </div>
+        <div class="cover-rings">${RINGS_SVG}</div>
+        <div class="cover-names">
+          <span class="editable-text" data-text="groomName">${c.groomName}</span>
+          <span class="dot">·</span>
+          <span class="editable-text" data-text="brideName">${c.brideName}</span>
+        </div>
+        <div class="cover-photo editable-img" onclick="pickImage('cover')">
+          <img src="${p.cover}" alt="封面照片" loading="lazy">
+        </div>
+      </div>
+      <div class="cover-scroll-hint">向下滑动 ↓</div>
+    </section>
+
+    <!-- 邀请函标题 -->
+    <section class="section section-cream invite-title fade-in">
+      <div class="invite-detail-img editable-img" onclick="pickImage('detail1')">
+        <img src="${p.detail1}" alt="细节" loading="lazy">
+      </div>
+      <div class="invite-title-text">
+        <div class="invite-title-main editable-text" data-text="texts.inviteTitle">${t.inviteTitle}</div>
+        <div class="invite-title-en editable-text" data-text="texts.inviteEn">${t.inviteEn}</div>
+      </div>
+      <div class="arch-photo">
+        <div class="arch-photo-inner editable-img" onclick="pickImage('arch')">
+          <img src="${p.arch}" alt="新人照片" loading="lazy">
+        </div>
+      </div>
+      <div class="invite-poem">
+        <div class="editable-text" data-text="texts.poem1.0">${t.poem1[0]}</div>
+        <div class="editable-text" data-text="texts.poem1.1">${t.poem1[1]}</div>
+      </div>
+    </section>
+
+    <!-- 新人介绍 -->
+    <section class="section section-cream intro-section fade-in">
+      <div class="poem-block">
+        <p class="poem-title editable-text" data-text="texts.poem2.0">${t.poem2[0]}</p>
+        <p class="editable-text" data-text="texts.poem2.1">${t.poem2[1]}</p>
+      </div>
+      <div class="poem-block">
+        <p class="poem-title editable-text" data-text="texts.poem3.0">${t.poem3[0]}</p>
+        <p class="editable-text" data-text="texts.poem3.1">${t.poem3[1]}</p>
+      </div>
+      <div class="couple-photos">
+        <div class="couple-photo-item">
+          <div class="couple-photo-frame editable-img" onclick="pickImage('groom')">
+            <img src="${p.groom}" alt="新郎" loading="lazy">
+          </div>
+          <div class="couple-label"><span class="heart-mini">♥</span>GROOM<span class="heart-mini">♥</span></div>
+          <div class="couple-name editable-text" data-text="groomName">${c.groomName}</div>
+        </div>
+        <div class="couple-photo-item">
+          <div class="couple-photo-frame editable-img" onclick="pickImage('bride')">
+            <img src="${p.bride}" alt="新娘" loading="lazy">
+          </div>
+          <div class="couple-label"><span class="heart-mini">♥</span>BRIDE<span class="heart-mini">♥</span></div>
+          <div class="couple-name editable-text" data-text="brideName">${c.brideName}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 婚礼信息 -->
+    <section class="section section-cream wedding-info fade-in">
+      <div class="info-block">
+        <div class="info-label">· TIME ·</div>
+        <div class="info-title">婚礼日期</div>
+        <div class="info-detail">
+          <div class="date-main">
+            <span class="editable-text" data-text="weddingYear">${c.weddingYear}</span>年
+            <span class="editable-text" data-text="weddingMonth">${c.weddingMonth}</span>月
+            <span class="editable-text" data-text="weddingDay">${c.weddingDay}</span>日
+            <span class="editable-text" data-text="weddingTime">${c.weddingTime}</span>
+          </div>
+          <div>
+            <span class="editable-text" data-text="weddingLunar">${c.weddingLunar}</span>
+            (<span class="editable-text" data-text="weddingWeekday">${c.weddingWeekday}</span>)
+          </div>
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">· LOCATION ·</div>
+        <div class="info-title">婚礼地点</div>
+        <div class="info-detail editable-text" data-text="location">${c.location}</div>
+      </div>
+      <div class="banner-photo editable-img" onclick="pickImage('banner')">
+        <img src="${p.banner}" alt="我们结婚啦" loading="lazy">
+      </div>
+    </section>
+
+    <!-- 誓言1 -->
+    <section class="section section-cream oath-section fade-in">
+      <div class="oath-top-photo editable-img" onclick="pickImage('oath1')">
+        <img src="${p.oath1}" alt="婚纱照" loading="lazy">
+      </div>
+      <div class="oath-content">
+        <div class="oath-rings">${RINGS_SVG}</div>
+        <div class="oath-title editable-text" data-text="texts.oath1Title">{${t.oath1Title}}</div>
+        <div class="oath-text">
+          <div class="editable-text" data-text="texts.oath1Text.0">${t.oath1Text[0]}</div>
+          <div class="editable-text" data-text="texts.oath1Text.1">${t.oath1Text[1]}</div>
+          <div class="editable-text" data-text="texts.oath1Text.2">${t.oath1Text[2]}</div>
+          <div class="editable-text" data-text="texts.oath1Text.3">${t.oath1Text[3]}</div>
+        </div>
+        <div class="oath-photo editable-img" onclick="pickImage('gallery1')">
+          <img src="${p.gallery1}" alt="誓言照片" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- 照片展示 -->
+    <section class="section section-cream gallery-section fade-in">
+      <div class="gallery-large editable-img" onclick="pickImage('gallery1')">
+        <img src="${p.gallery1}" alt="照片1" loading="lazy">
+      </div>
+      <div class="gallery-row">
+        <div class="gallery-small editable-img" onclick="pickImage('gallery2')">
+          <img src="${p.gallery2}" alt="照片2" loading="lazy">
+        </div>
+        <div class="gallery-small editable-img" onclick="pickImage('gallery3')">
+          <img src="${p.gallery3}" alt="照片3" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- 誓言2 -->
+    <section class="section section-cream oath2-section fade-in">
+      <div class="oath2-detail">
+        <div class="oath2-detail-item editable-img" onclick="pickImage('detail1')">
+          <img src="${p.detail1}" alt="细节1" loading="lazy">
+        </div>
+        <div class="oath2-detail-item editable-img" onclick="pickImage('detail2')">
+          <img src="${p.detail2}" alt="细节2" loading="lazy">
+        </div>
+      </div>
+      <div class="oath2-content">
+        <div class="oath-rings">${RINGS_SVG}</div>
+        <div class="oath-title editable-text" data-text="texts.oath2Title">{${t.oath2Title}}</div>
+        <div class="oath-text">
+          <div class="editable-text" data-text="texts.oath2Text.0">${t.oath2Text[0]}</div>
+          <div class="editable-text" data-text="texts.oath2Text.1">${t.oath2Text[1]}</div>
+          <div class="editable-text" data-text="texts.oath2Text.2">${t.oath2Text[2]}</div>
+          <div class="editable-text" data-text="texts.oath2Text.3">${t.oath2Text[3]}</div>
+        </div>
+        <div class="oath2-closeup editable-img" onclick="pickImage('closeup')">
+          <img src="${p.closeup}" alt="特写" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- 照片展示2 -->
+    <section class="section section-cream gallery2-section fade-in">
+      <div class="gallery2-wide editable-img" onclick="pickImage('banner')">
+        <img src="${p.banner}" alt="照片4" loading="lazy">
+      </div>
+      <div class="gallery2-card">
+        <div class="gallery2-card-inner editable-img" onclick="pickImage('cover')">
+          <img src="${p.cover}" alt="照片5" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- 日历 -->
+    <section class="section section-cream calendar-section fade-in">
+      <div class="calendar-top-photo editable-img" onclick="pickImage('calendarTop')">
+        <img src="${p.calendarTop}" alt="日历顶部" loading="lazy">
+      </div>
+      <div class="calendar-header">
+        <div class="calendar-month">
+          <span class="editable-text" data-text="weddingMonth">${c.weddingMonth}</span>
+          <span class="month-small"> / <span class="editable-text" data-text="weddingDay">${String(c.weddingDay).padStart(2,'0')}</span></span>
+        </div>
+        <div class="calendar-year">- <span class="editable-text" data-text="weddingYear">${c.weddingYear}</span> -</div>
+      </div>
+      <div class="calendar-grid">${generateCalendar(c.weddingYear, c.weddingMonth, c.weddingDay)}</div>
+      <div class="calendar-bottom-photo editable-img" onclick="pickImage('calendarBottom')">
+        <img src="${p.calendarBottom}" alt="日历底部" loading="lazy">
+      </div>
+    </section>
+
+    <!-- 回执 -->
+    <section class="section section-cream rsvp-section fade-in">
+      <div class="rsvp-welcome editable-text" data-text="texts.rsvpWelcome">${t.rsvpWelcome}</div>
+      <form class="rsvp-form" id="rsvpForm" onsubmit="submitRSVP(event)">
+        <div class="form-group">
+          <input type="text" class="form-input" placeholder="${t.rsvpNamePlaceholder}" id="guestName" required>
+        </div>
+        <div class="form-group">
+          <input type="number" class="form-input" placeholder="${t.rsvpCountPlaceholder}" id="guestCount" min="1" required>
+        </div>
+        <button type="submit" class="form-submit">${t.rsvpSubmit}</button>
+      </form>
+      <div class="rsvp-thanks" id="rsvpThanks">${t.rsvpThanks}</div>
+      <div class="blessing-heart">${HEART_SVG}</div>
+      <div class="blessing editable-text" data-text="texts.blessing">${t.blessing}</div>
+    </section>
+  `;
+
+  if (CONFIG.musicUrl) {
+    document.getElementById('bgMusic').src = CONFIG.musicUrl;
+  }
+  initFadeIn();
+  if (editMode) bindEditEvents();
+}
+
+/* ========== 入场动画 ========== */
+function initFadeIn() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+/* ========== 编辑模式 ========== */
+function toggleEditMode() {
+  editMode = !editMode;
+  document.body.classList.toggle('edit-mode', editMode);
+  document.getElementById('editBtn').classList.toggle('active', editMode);
+  if (editMode) {
+    bindEditEvents();
+    showToast('编辑模式：点击文字修改，点击图片更换');
+  }
+}
+
+function bindEditEvents() {
+  document.querySelectorAll('.editable-text').forEach(el => {
+    el.contentEditable = 'true';
+    el.addEventListener('blur', onTextEdit);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    });
+  });
+}
+
+function onTextEdit(e) {
+  const key = e.target.dataset.text;
+  const value = e.target.textContent.trim();
+  if (!key) return;
+  setConfigValue(key, value);
+}
+
+function setConfigValue(path, value) {
+  const keys = path.split('.');
+  let obj = CONFIG;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (obj[keys[i]] === undefined) obj[keys[i]] = {};
+    obj = obj[keys[i]];
+  }
+  // 数字类型转换
+  if (['weddingYear','weddingMonth','weddingDay'].includes(keys[keys.length-1])) {
+    value = parseInt(value) || value;
+  }
+  obj[keys[keys.length-1]] = value;
+  // 日期变化时重新渲染日历
+  if (keys.includes('weddingYear') || keys.includes('weddingMonth') || keys.includes('weddingDay')) {
+    const scrollPos = window.scrollY;
+    render();
+    window.scrollTo(0, scrollPos);
+  }
+}
+
+/* ========== 图片更换 ========== */
+function pickImage(key) {
+  if (!editMode) return;
+  currentImgKey = key;
+  document.getElementById('fileInput').click();
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file || !currentImgKey) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const base64 = ev.target.result;
+    CONFIG.photos[currentImgKey] = base64;
+    const scrollPos = window.scrollY;
+    render();
+    window.scrollTo(0, scrollPos);
+    showToast('图片已更换，记得点保存');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+/* ========== 保存/重置 ========== */
+function saveChanges() {
+  // 收集所有文字修改
+  document.querySelectorAll('.editable-text').forEach(el => {
+    const key = el.dataset.text;
+    if (key) setConfigValue(key, el.textContent.trim());
+  });
+  saveConfig();
+}
+
+function resetAll() {
+  if (confirm('确定要恢复默认内容吗？所有修改将丢失。')) {
+    localStorage.removeItem('wedding_invitation_config');
+    CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    render();
+    showToast('已恢复默认');
+  }
+}
+
+/* ========== 表单 ========== */
+function submitRSVP(e) {
+  e.preventDefault();
+  const name = document.getElementById('guestName').value;
+  const count = document.getElementById('guestCount').value;
+  if (name && count) {
+    document.getElementById('rsvpForm').style.display = 'none';
+    document.getElementById('rsvpThanks').classList.add('show');
+  }
+}
+
+/* ========== 音乐 ========== */
+let musicPlaying = false;
+function toggleMusic() {
+  const audio = document.getElementById('bgMusic');
+  const btn = document.getElementById('musicBtn');
+  if (!audio.src) {
+    showToast('请在编辑模式中设置背景音乐');
+    return;
+  }
+  if (musicPlaying) {
+    audio.pause();
+    btn.classList.remove('playing');
+  } else {
+    audio.play().catch(() => {});
+    btn.classList.add('playing');
+  }
+  musicPlaying = !musicPlaying;
+}
+
+/* 启动 */
+render();
+</script>
+</body>
+</html>
