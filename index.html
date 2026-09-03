@@ -409,6 +409,8 @@ body.edit-mode { padding-bottom: 70px; }
 .btn-reset:hover { background: #e0e0e0; }
 .btn-exit { background: var(--gold); color: white; }
 .btn-exit:hover { background: #b8965a; }
+.btn-music { background: #e8d5b5; color: var(--red-deep); }
+.btn-music:hover { background: #dcc59e; }
 
 /* 保存提示 */
 .save-toast {
@@ -454,6 +456,7 @@ body.edit-mode { padding-bottom: 70px; }
 
 <!-- 编辑工具栏 -->
 <div class="edit-toolbar">
+  <button class="btn-music" onclick="pickMusic()">更换音乐</button>
   <button class="btn-reset" onclick="resetAll()">恢复默认</button>
   <button class="btn-save" onclick="saveChanges()">保存修改</button>
   <button class="btn-exit" onclick="toggleEditMode()">完成</button>
@@ -464,6 +467,7 @@ body.edit-mode { padding-bottom: 70px; }
 
 <!-- 隐藏文件输入 -->
 <input type="file" id="fileInput" accept="image/*">
+<input type="file" id="musicInput" accept="audio/*">
 
 <audio id="bgMusic" loop>
   <source src="" type="audio/mpeg">
@@ -483,7 +487,7 @@ const DEFAULT_CONFIG = {
   weddingLunar: "农历三月十二",
   weddingWeekday: "星期六",
   location: "广东省云浮市XX酒店XX宴会厅",
-  musicUrl: "",
+  musicUrl: "https://aka.doubaocdn.com/s/bBPVa5o0EE",
   photos: {
     cover: "https://aka.doubaocdn.com/s/RUfB70TXFV",
     arch: "https://aka.doubaocdn.com/s/RUfB70TXFV",
@@ -881,6 +885,27 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     render();
     window.scrollTo(0, scrollPos);
     showToast('图片已更换，记得点保存');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+/* ========== 音乐更换 ========== */
+function pickMusic() {
+  document.getElementById('musicInput').click();
+}
+
+document.getElementById('musicInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const base64 = ev.target.result;
+    CONFIG.musicUrl = base64;
+    const audio = document.getElementById('bgMusic');
+    audio.src = base64;
+    audio.load();
+    showToast('音乐已更换，记得点保存');
   };
   reader.readAsDataURL(file);
   e.target.value = '';
