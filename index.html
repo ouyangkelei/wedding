@@ -491,6 +491,7 @@ body.edit-mode { padding-bottom: 70px; }
   <button class="btn-music" onclick="pickMusic()">更换音乐</button>
   <button class="btn-reset" onclick="resetAll()">恢复默认</button>
   <button class="btn-save" onclick="saveChanges()">保存修改</button>
+  <button class="btn-exit" onclick="generateShareLink()" style="background:#2d8a4e;color:white;">复制分享链接</button>
   <button class="btn-exit" onclick="toggleEditMode()">完成</button>
 </div>
 
@@ -575,8 +576,29 @@ const HEART_SVG = `<svg viewBox="0 0 50 45" xmlns="http://www.w3.org/2000/svg">
   <text x="25" y="26" text-anchor="middle" fill="#F5E6D3" font-size="14" font-family="serif">祝</text>
 </svg>`;
 
-/* ========== 本地存储 ========== */
+/* ========== 本地存储 & URL分享 ========== */
 function loadConfig() {
+  // 优先从URL参数加载（分享链接）
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = urlParams.get('data');
+    if (data) {
+      const jsonStr = decodeURIComponent(escape(atob(data)));
+      const urlConfig = JSON.parse(jsonStr);
+      // 合并到默认配置
+      const merged = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+      for (const key in urlConfig) {
+        if (key === 'photos' || key === 'texts') {
+          merged[key] = Object.assign({}, merged[key], urlConfig[key]);
+        } else {
+          merged[key] = urlConfig[key];
+        }
+      }
+      return merged;
+    }
+  } catch(e) {}
+  
+  // 其次从本地存储加载
   try {
     const saved = localStorage.getItem('wedding_invitation_config');
     if (saved) {
@@ -584,6 +606,52 @@ function loadConfig() {
     }
   } catch(e) {}
   return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+}
+
+/* ========== 生成分享链接 ========== */
+function generateShareLink() {
+  // 先保存当前修改
+  document.querySelectorAll('.editable-text').forEach(el => {
+    const key = el.dataset.text;
+    if (key) setConfigValue(key, el.textContent.trim());
+  });
+  
+  // 复制一份配置用于分享
+  const shareConfig = JSON.parse(JSON.stringify(CONFIG));
+  
+  // 检查是否有本地上传的base64图片/音乐（太长无法放到URL里）
+  let hasLocalMedia = false;
+  for (const key in shareConfig.photos) {
+    if (shareConfig.photos[key] && shareConfig.photos[key].startsWith('data:')) {
+      hasLocalMedia = true;
+      shareConfig.photos[key] = DEFAULT_CONFIG.photos[key];
+    }
+  }
+  if (shareConfig.musicUrl && shareConfig.musicUrl.startsWith('data:')) {
+    hasLocalMedia = true;
+    shareConfig.musicUrl = DEFAULT_CONFIG.musicUrl;
+  }
+  
+  // 编码到URL
+  const jsonStr = JSON.stringify(shareConfig);
+  const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+  const baseUrl = window.location.origin + window.location.pathname;
+  const shareUrl = baseUrl + '?data=' + encoded;
+  
+  // 复制到剪贴板
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      if (hasLocalMedia) {
+        showToast('链接已复制！注意：本地上传的图片/音乐无法分享，已用默认内容代替');
+      } else {
+        showToast('分享链接已复制！发给好友打开即可看到你的修改');
+      }
+    }).catch(() => {
+      prompt('复制以下链接分享给好友：', shareUrl);
+    });
+  } else {
+    prompt('复制以下链接分享给好友：', shareUrl);
+  }
 }
 
 function saveConfig() {
@@ -909,7 +977,21 @@ function setConfigValue(path, value) {
 function pickImage(key) {
   if (!editMode) return;
   currentImgKey = key;
-  document.getElementById('fileInput').click();
+  // 让用户选择：上传本地图片 或 输入图片网址
+  if (confirm('点击"确定"上传手机里的图片（仅自己可见）\n点击"取消"输入图片网址（可分享给好友）')) {
+    document.getElementById('fileInput').click();
+  } else {
+    const url = prompt('请输入图片网址（以http开头）：', CONFIG.photos[key] || '');
+    if (url && url.startsWith('http')) {
+      CONFIG.photos[key] = url;
+      const scrollPos = window.scrollY;
+      render();
+      window.scrollTo(0, scrollPos);
+      showToast('图片已更换，可通过分享链接发给好友');
+    } else if (url) {
+      showToast('网址格式不正确，请输入以http开头的网址');
+    }
+  }
 }
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
