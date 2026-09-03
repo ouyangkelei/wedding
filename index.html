@@ -340,6 +340,10 @@ body {
 .music-btn.playing svg { animation: spin 4s linear infinite; }
 .edit-btn { right: 70px; }
 .edit-btn.active { background: var(--gold); }
+.scroll-btn { right: 120px; }
+.scroll-btn.active { background: var(--gold); }
+.scroll-btn.active svg { animation: bounce 1.5s ease-in-out infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* ========== 编辑模式 ========== */
@@ -454,6 +458,11 @@ body.edit-mode { padding-bottom: 70px; }
   <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
 </div>
 
+<!-- 自动滚动按钮 -->
+<div class="top-btn scroll-btn" id="scrollBtn" onclick="toggleAutoScroll()" title="自动滚动">
+  <svg viewBox="0 0 24 24"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z M12 16l6-6-1.41-1.41L12 13.17l-4.59-4.58L6 10z"/></svg>
+</div>
+
 <!-- 编辑工具栏 -->
 <div class="edit-toolbar">
   <button class="btn-music" onclick="pickMusic()">更换音乐</button>
@@ -487,7 +496,7 @@ const DEFAULT_CONFIG = {
   weddingLunar: "农历三月十二",
   weddingWeekday: "星期六",
   location: "广东省云浮市XX酒店XX宴会厅",
-  musicUrl: "https://aka.doubaocdn.com/s/bBPVa5o0EE",
+  musicUrl: "https://aka.doubaocdn.com/s/pLHgsc1Nni",
   photos: {
     cover: "https://aka.doubaocdn.com/s/RUfB70TXFV",
     arch: "https://aka.doubaocdn.com/s/RUfB70TXFV",
@@ -959,6 +968,57 @@ function toggleMusic() {
   }
   musicPlaying = !musicPlaying;
 }
+
+/* ========== 自动滚动 ========== */
+let autoScrolling = false;
+let scrollTimer = null;
+let userScrolling = false;
+let userScrollTimer = null;
+
+function toggleAutoScroll() {
+  const btn = document.getElementById('scrollBtn');
+  if (autoScrolling) {
+    stopAutoScroll();
+    btn.classList.remove('active');
+    showToast('已关闭自动滚动');
+  } else {
+    startAutoScroll();
+    btn.classList.add('active');
+    showToast('已开启自动滚动');
+  }
+}
+
+function startAutoScroll() {
+  autoScrolling = true;
+  scrollTimer = setInterval(() => {
+    if (userScrolling || editMode) return;
+    window.scrollBy(0, 1);
+    // 滚动到底部后回到顶部
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+      setTimeout(() => {
+        if (autoScrolling) window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 2000);
+    }
+  }, 40);
+}
+
+function stopAutoScroll() {
+  autoScrolling = false;
+  if (scrollTimer) {
+    clearInterval(scrollTimer);
+    scrollTimer = null;
+  }
+}
+
+// 监听用户手动滚动
+window.addEventListener('scroll', () => {
+  if (!autoScrolling) return;
+  userScrolling = true;
+  if (userScrollTimer) clearTimeout(userScrollTimer);
+  userScrollTimer = setTimeout(() => {
+    userScrolling = false;
+  }, 1500);
+});
 
 /* 启动 */
 render();
