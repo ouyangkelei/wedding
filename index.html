@@ -1024,8 +1024,8 @@ function startAutoScroll() {
   const content = document.getElementById('scrollContent');
   const contentHeight = content.scrollHeight;
   const viewportHeight = window.innerHeight;
-  // 滚动速度：每秒200像素，舒缓流畅
-  const duration = (contentHeight - viewportHeight) / 200;
+  // 滚动速度：每秒150像素，舒缓流畅
+  const duration = (contentHeight - viewportHeight) / 150;
   
   content.style.animationDuration = duration + 's';
   content.classList.add('auto-scrolling');
