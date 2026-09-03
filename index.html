@@ -29,8 +29,27 @@ body {
   background: var(--cream-light);
   color: var(--text-dark);
   line-height: 1.8;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+/* 流畅滚动容器 */
+.scroll-viewport {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+.scroll-content {
+  will-change: transform;
+  transition: none;
+}
+.scroll-content.auto-scrolling {
+  animation: smoothScroll linear infinite;
+}
+@keyframes smoothScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(-100% + 100vh)); }
 }
 
 .page-wrap {
@@ -446,7 +465,11 @@ body.edit-mode { padding-bottom: 70px; }
 </head>
 <body>
 
-<div class="page-wrap" id="app"></div>
+<div class="scroll-viewport">
+  <div class="scroll-content" id="scrollContent">
+    <div class="page-wrap" id="app"></div>
+  </div>
+</div>
 
 <!-- 音乐按钮 -->
 <div class="top-btn music-btn" id="musicBtn" onclick="toggleMusic()">
@@ -835,7 +858,13 @@ function toggleEditMode() {
   document.getElementById('editBtn').classList.toggle('active', editMode);
   if (editMode) {
     bindEditEvents();
+    stopAutoScroll();
     showToast('编辑模式：点击文字修改，点击图片更换');
+  } else {
+    // 退出编辑模式后恢复自动滚动
+    if (autoScrolling) {
+      setTimeout(() => startAutoScroll(), 300);
+    }
   }
 }
 
@@ -969,11 +998,12 @@ function toggleMusic() {
   musicPlaying = !musicPlaying;
 }
 
-/* ========== 自动滚动 ========== */
+/* ========== 自动滚动（CSS动画，丝滑流畅） ========== */
 let autoScrolling = false;
-let scrollTimer = null;
 let userScrolling = false;
 let userScrollTimer = null;
+let touchStartY = 0;
+let currentTranslate = 0;
 
 function toggleAutoScroll() {
   const btn = document.getElementById('scrollBtn');
@@ -989,50 +1019,95 @@ function toggleAutoScroll() {
 }
 
 function startAutoScroll() {
+  if (editMode) return;
   autoScrolling = true;
-  let lastTime = performance.now();
+  const content = document.getElementById('scrollContent');
+  const contentHeight = content.scrollHeight;
+  const viewportHeight = window.innerHeight;
+  // 滚动速度：每秒1500像素，流畅不拖沓
+  const duration = (contentHeight - viewportHeight) / 1500;
   
-  function scrollStep(currentTime) {
-    if (!autoScrolling) return;
-    
-    const deltaTime = currentTime - lastTime;
-    lastTime = currentTime;
-    
-    if (!userScrolling && !editMode) {
-      // 每秒滚动20000像素，极致流畅
-      const scrollAmount = (20000 * deltaTime) / 1000;
-      window.scrollBy(0, scrollAmount);
-      
-      // 滚动到底部后回到顶部
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
-        setTimeout(() => {
-          if (autoScrolling) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            lastTime = performance.now();
-          }
-        }, 1500);
-      }
-    }
-    
-    requestAnimationFrame(scrollStep);
-  }
-  
-  requestAnimationFrame(scrollStep);
+  content.style.animationDuration = duration + 's';
+  content.classList.add('auto-scrolling');
+  content.style.animationPlayState = 'running';
 }
 
 function stopAutoScroll() {
   autoScrolling = false;
+  const content = document.getElementById('scrollContent');
+  if (content) {
+    content.style.animationPlayState = 'paused';
+  }
 }
 
-// 监听用户手动滚动
-window.addEventListener('scroll', () => {
-  if (!autoScrolling) return;
+// 用户触摸开始 - 暂停自动滚动
+document.addEventListener('touchstart', (e) => {
+  if (!autoScrolling || editMode) return;
+  touchStartY = e.touches[0].clientY;
   userScrolling = true;
+  const content = document.getElementById('scrollContent');
+  content.style.animationPlayState = 'paused';
+  
+  // 获取当前动画位置
+  const computed = window.getComputedStyle(content);
+  const matrix = new DOMMatrix(computed.transform);
+  currentTranslate = matrix.m42;
+}, { passive: true });
+
+// 用户触摸移动 - 手动拖动
+document.addEventListener('touchmove', (e) => {
+  if (!autoScrolling || !userScrolling || editMode) return;
+  const deltaY = e.touches[0].clientY - touchStartY;
+  const content = document.getElementById('scrollContent');
+  const contentHeight = content.scrollHeight;
+  const viewportHeight = window.innerHeight;
+  const maxTranslate = -(contentHeight - viewportHeight);
+  
+  let newTranslate = currentTranslate + deltaY;
+  newTranslate = Math.max(maxTranslate, Math.min(0, newTranslate));
+  content.style.transform = `translateY(${newTranslate}px)`;
+}, { passive: true });
+
+// 用户触摸结束 - 恢复自动滚动
+document.addEventListener('touchend', () => {
+  if (!autoScrolling || !userScrolling || editMode) return;
+  userScrolling = false;
+  
+  // 从当前位置继续动画
+  setTimeout(() => {
+    if (autoScrolling && !editMode) {
+      const content = document.getElementById('scrollContent');
+      content.style.animationPlayState = 'running';
+    }
+  }, 500);
+}, { passive: true });
+
+// 鼠标滚轮支持
+document.addEventListener('wheel', (e) => {
+  if (!autoScrolling || editMode) return;
+  e.preventDefault();
+  const content = document.getElementById('scrollContent');
+  content.style.animationPlayState = 'paused';
+  
+  const computed = window.getComputedStyle(content);
+  const matrix = new DOMMatrix(computed.transform);
+  currentTranslate = matrix.m42;
+  
+  const contentHeight = content.scrollHeight;
+  const viewportHeight = window.innerHeight;
+  const maxTranslate = -(contentHeight - viewportHeight);
+  
+  let newTranslate = currentTranslate - e.deltaY;
+  newTranslate = Math.max(maxTranslate, Math.min(0, newTranslate));
+  content.style.transform = `translateY(${newTranslate}px)`;
+  
   if (userScrollTimer) clearTimeout(userScrollTimer);
   userScrollTimer = setTimeout(() => {
-    userScrolling = false;
-  }, 1500);
-});
+    if (autoScrolling && !editMode) {
+      content.style.animationPlayState = 'running';
+    }
+  }, 800);
+}, { passive: false });
 
 /* 启动 */
 render();
@@ -1043,7 +1118,7 @@ setTimeout(() => {
   document.getElementById('scrollBtn').classList.add('active');
 }, 500);
 
-// 音乐自动播放 - 多次尝试，确保能播放
+// 音乐自动播放 - 多种方式确保能播放
 let musicPlayed = false;
 function tryPlayMusic() {
   if (musicPlayed) return;
@@ -1053,22 +1128,26 @@ function tryPlayMusic() {
       musicPlayed = true;
       musicPlaying = true;
       document.getElementById('musicBtn').classList.add('playing');
-    }).catch(() => {
-      // 被浏览器阻止，等用户交互
-    });
+    }).catch(() => {});
   }
 }
 
 // 立即尝试播放
 tryPlayMusic();
-// 500ms后再试一次
-setTimeout(tryPlayMusic, 500);
-// 1秒后再试一次
-setTimeout(tryPlayMusic, 1000);
+// 多次尝试
+setTimeout(tryPlayMusic, 300);
+setTimeout(tryPlayMusic, 800);
+setTimeout(tryPlayMusic, 1500);
+
+// 微信浏览器专用
+document.addEventListener('WeixinJSBridgeReady', tryPlayMusic, false);
+if (typeof WeixinJSBridge !== 'undefined') {
+  tryPlayMusic();
+}
 
 // 任何用户交互都尝试播放
-['click', 'touchstart', 'touchend', 'keydown', 'scroll', 'wheel', 'mousemove'].forEach(event => {
-  document.addEventListener(event, tryPlayMusic, { once: false });
+['click', 'touchstart', 'touchend', 'keydown', 'wheel', 'mousemove', 'pointerdown'].forEach(event => {
+  document.addEventListener(event, tryPlayMusic, { once: false, passive: true });
 });
 </script>
 </body>
