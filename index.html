@@ -1024,8 +1024,8 @@ function startAutoScroll() {
   const content = document.getElementById('scrollContent');
   const contentHeight = content.scrollHeight;
   const viewportHeight = window.innerHeight;
-  // 滚动速度：每秒1500像素，流畅不拖沓
-  const duration = (contentHeight - viewportHeight) / 1500;
+  // 滚动速度：每秒500像素，舒缓流畅
+  const duration = (contentHeight - viewportHeight) / 500;
   
   content.style.animationDuration = duration + 's';
   content.classList.add('auto-scrolling');
@@ -1132,12 +1132,17 @@ function tryPlayMusic() {
   }
 }
 
+// 音乐加载完成后尝试播放
+document.getElementById('bgMusic').addEventListener('canplay', tryPlayMusic);
+document.getElementById('bgMusic').addEventListener('loadeddata', tryPlayMusic);
+
 // 立即尝试播放
 tryPlayMusic();
 // 多次尝试
 setTimeout(tryPlayMusic, 300);
 setTimeout(tryPlayMusic, 800);
 setTimeout(tryPlayMusic, 1500);
+setTimeout(tryPlayMusic, 2500);
 
 // 微信浏览器专用
 document.addEventListener('WeixinJSBridgeReady', tryPlayMusic, false);
@@ -1146,7 +1151,7 @@ if (typeof WeixinJSBridge !== 'undefined') {
 }
 
 // 任何用户交互都尝试播放
-['click', 'touchstart', 'touchend', 'keydown', 'wheel', 'mousemove', 'pointerdown'].forEach(event => {
+['click', 'touchstart', 'touchend', 'keydown', 'wheel', 'mousemove', 'pointerdown', 'pointerup'].forEach(event => {
   document.addEventListener(event, tryPlayMusic, { once: false, passive: true });
 });
 </script>
