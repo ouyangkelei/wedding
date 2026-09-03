@@ -522,18 +522,23 @@ const DEFAULT_CONFIG = {
   location: "广东省云浮市XX酒店XX宴会厅",
   musicUrl: "https://aka.doubaocdn.com/s/pLHgsc1Nni",
   photos: {
-    cover: "https://aka.doubaocdn.com/s/RUfB70TXFV",
-    arch: "https://aka.doubaocdn.com/s/RUfB70TXFV",
-    groom: "https://aka.doubaocdn.com/s/2Wajjrk717",
-    bride: "https://aka.doubaocdn.com/s/2Wajjrk717",
-    banner: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
-    oath1: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
-    gallery1: "https://aka.doubaocdn.com/s/RUfB70TXFV",
-    gallery2: "https://aka.doubaocdn.com/s/2Wajjrk717",
-    gallery3: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
-    detail1: "https://aka.doubaocdn.com/s/dVUtJMEo0X",
-    detail2: "https://aka.doubaocdn.com/s/RUfB70TXFV",
-    closeup: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    coverBg: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    coverPhoto: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    inviteDetail: "https://aka.doubaocdn.com/s/dVUtJMEo0X",
+    archPhoto: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    groomPhoto: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    bridePhoto: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    infoBanner: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    oath1Top: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    oath1Bottom: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    galleryLarge: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    gallerySmall1: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    gallerySmall2: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    oath2Detail1: "https://aka.doubaocdn.com/s/dVUtJMEo0X",
+    oath2Detail2: "https://aka.doubaocdn.com/s/RUfB70TXFV",
+    oath2Closeup: "https://aka.doubaocdn.com/s/2Wajjrk717",
+    gallery2Wide: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
+    gallery2Card: "https://aka.doubaocdn.com/s/RUfB70TXFV",
     calendarTop: "https://aka.doubaocdn.com/s/PwV1Szx9Kl",
     calendarBottom: "https://aka.doubaocdn.com/s/PwV1Szx9Kl"
   },
@@ -697,7 +702,7 @@ function render() {
   app.innerHTML = `
     <!-- 封面 -->
     <section class="section section-red cover fade-in">
-      <div class="cover-bg editable-img" data-img="cover" style="background-image:url('${p.cover}')" onclick="pickImage('cover')"></div>
+      <div class="cover-bg editable-img" data-img="coverBg" style="background-image:url('${p.coverBg}')" onclick="pickImage('coverBg')"></div>
       <div class="cover-content">
         <div class="cover-xi">囍</div>
         <div class="cover-subtitle">
@@ -711,8 +716,8 @@ function render() {
           <span class="dot">·</span>
           <span class="editable-text" data-text="brideName">${c.brideName}</span>
         </div>
-        <div class="cover-photo editable-img" onclick="pickImage('cover')">
-          <img src="${p.cover}" alt="封面照片" loading="lazy">
+        <div class="cover-photo editable-img" onclick="pickImage('coverPhoto')">
+          <img src="${p.coverPhoto}" alt="封面照片" loading="lazy">
         </div>
       </div>
       <div class="cover-scroll-hint">向下滑动 ↓</div>
@@ -720,16 +725,16 @@ function render() {
 
     <!-- 邀请函标题 -->
     <section class="section section-cream invite-title fade-in">
-      <div class="invite-detail-img editable-img" onclick="pickImage('detail1')">
-        <img src="${p.detail1}" alt="细节" loading="lazy">
+      <div class="invite-detail-img editable-img" onclick="pickImage('inviteDetail')">
+        <img src="${p.inviteDetail}" alt="细节" loading="lazy">
       </div>
       <div class="invite-title-text">
         <div class="invite-title-main editable-text" data-text="texts.inviteTitle">${t.inviteTitle}</div>
         <div class="invite-title-en editable-text" data-text="texts.inviteEn">${t.inviteEn}</div>
       </div>
       <div class="arch-photo">
-        <div class="arch-photo-inner editable-img" onclick="pickImage('arch')">
-          <img src="${p.arch}" alt="新人照片" loading="lazy">
+        <div class="arch-photo-inner editable-img" onclick="pickImage('archPhoto')">
+          <img src="${p.archPhoto}" alt="新人照片" loading="lazy">
         </div>
       </div>
       <div class="invite-poem">
@@ -750,15 +755,15 @@ function render() {
       </div>
       <div class="couple-photos">
         <div class="couple-photo-item">
-          <div class="couple-photo-frame editable-img" onclick="pickImage('groom')">
-            <img src="${p.groom}" alt="新郎" loading="lazy">
+          <div class="couple-photo-frame editable-img" onclick="pickImage('groomPhoto')">
+            <img src="${p.groomPhoto}" alt="新郎" loading="lazy">
           </div>
           <div class="couple-label"><span class="heart-mini">♥</span>GROOM<span class="heart-mini">♥</span></div>
           <div class="couple-name editable-text" data-text="groomName">${c.groomName}</div>
         </div>
         <div class="couple-photo-item">
-          <div class="couple-photo-frame editable-img" onclick="pickImage('bride')">
-            <img src="${p.bride}" alt="新娘" loading="lazy">
+          <div class="couple-photo-frame editable-img" onclick="pickImage('bridePhoto')">
+            <img src="${p.bridePhoto}" alt="新娘" loading="lazy">
           </div>
           <div class="couple-label"><span class="heart-mini">♥</span>BRIDE<span class="heart-mini">♥</span></div>
           <div class="couple-name editable-text" data-text="brideName">${c.brideName}</div>
@@ -789,15 +794,15 @@ function render() {
         <div class="info-title">婚礼地点</div>
         <div class="info-detail editable-text" data-text="location">${c.location}</div>
       </div>
-      <div class="banner-photo editable-img" onclick="pickImage('banner')">
-        <img src="${p.banner}" alt="我们结婚啦" loading="lazy">
+      <div class="banner-photo editable-img" onclick="pickImage('infoBanner')">
+        <img src="${p.infoBanner}" alt="我们结婚啦" loading="lazy">
       </div>
     </section>
 
     <!-- 誓言1 -->
     <section class="section section-cream oath-section fade-in">
-      <div class="oath-top-photo editable-img" onclick="pickImage('oath1')">
-        <img src="${p.oath1}" alt="婚纱照" loading="lazy">
+      <div class="oath-top-photo editable-img" onclick="pickImage('oath1Top')">
+        <img src="${p.oath1Top}" alt="婚纱照" loading="lazy">
       </div>
       <div class="oath-content">
         <div class="oath-rings">${RINGS_SVG}</div>
@@ -808,23 +813,23 @@ function render() {
           <div class="editable-text" data-text="texts.oath1Text.2">${t.oath1Text[2]}</div>
           <div class="editable-text" data-text="texts.oath1Text.3">${t.oath1Text[3]}</div>
         </div>
-        <div class="oath-photo editable-img" onclick="pickImage('gallery1')">
-          <img src="${p.gallery1}" alt="誓言照片" loading="lazy">
+        <div class="oath-photo editable-img" onclick="pickImage('oath1Bottom')">
+          <img src="${p.oath1Bottom}" alt="誓言照片" loading="lazy">
         </div>
       </div>
     </section>
 
     <!-- 照片展示 -->
     <section class="section section-cream gallery-section fade-in">
-      <div class="gallery-large editable-img" onclick="pickImage('gallery1')">
-        <img src="${p.gallery1}" alt="照片1" loading="lazy">
+      <div class="gallery-large editable-img" onclick="pickImage('galleryLarge')">
+        <img src="${p.galleryLarge}" alt="照片1" loading="lazy">
       </div>
       <div class="gallery-row">
-        <div class="gallery-small editable-img" onclick="pickImage('gallery2')">
-          <img src="${p.gallery2}" alt="照片2" loading="lazy">
+        <div class="gallery-small editable-img" onclick="pickImage('gallerySmall1')">
+          <img src="${p.gallerySmall1}" alt="照片2" loading="lazy">
         </div>
-        <div class="gallery-small editable-img" onclick="pickImage('gallery3')">
-          <img src="${p.gallery3}" alt="照片3" loading="lazy">
+        <div class="gallery-small editable-img" onclick="pickImage('gallerySmall2')">
+          <img src="${p.gallerySmall2}" alt="照片3" loading="lazy">
         </div>
       </div>
     </section>
@@ -832,11 +837,11 @@ function render() {
     <!-- 誓言2 -->
     <section class="section section-cream oath2-section fade-in">
       <div class="oath2-detail">
-        <div class="oath2-detail-item editable-img" onclick="pickImage('detail1')">
-          <img src="${p.detail1}" alt="细节1" loading="lazy">
+        <div class="oath2-detail-item editable-img" onclick="pickImage('oath2Detail1')">
+          <img src="${p.oath2Detail1}" alt="细节1" loading="lazy">
         </div>
-        <div class="oath2-detail-item editable-img" onclick="pickImage('detail2')">
-          <img src="${p.detail2}" alt="细节2" loading="lazy">
+        <div class="oath2-detail-item editable-img" onclick="pickImage('oath2Detail2')">
+          <img src="${p.oath2Detail2}" alt="细节2" loading="lazy">
         </div>
       </div>
       <div class="oath2-content">
@@ -848,20 +853,20 @@ function render() {
           <div class="editable-text" data-text="texts.oath2Text.2">${t.oath2Text[2]}</div>
           <div class="editable-text" data-text="texts.oath2Text.3">${t.oath2Text[3]}</div>
         </div>
-        <div class="oath2-closeup editable-img" onclick="pickImage('closeup')">
-          <img src="${p.closeup}" alt="特写" loading="lazy">
+        <div class="oath2-closeup editable-img" onclick="pickImage('oath2Closeup')">
+          <img src="${p.oath2Closeup}" alt="特写" loading="lazy">
         </div>
       </div>
     </section>
 
     <!-- 照片展示2 -->
     <section class="section section-cream gallery2-section fade-in">
-      <div class="gallery2-wide editable-img" onclick="pickImage('banner')">
-        <img src="${p.banner}" alt="照片4" loading="lazy">
+      <div class="gallery2-wide editable-img" onclick="pickImage('gallery2Wide')">
+        <img src="${p.gallery2Wide}" alt="照片4" loading="lazy">
       </div>
       <div class="gallery2-card">
-        <div class="gallery2-card-inner editable-img" onclick="pickImage('cover')">
-          <img src="${p.cover}" alt="照片5" loading="lazy">
+        <div class="gallery2-card-inner editable-img" onclick="pickImage('gallery2Card')">
+          <img src="${p.gallery2Card}" alt="照片5" loading="lazy">
         </div>
       </div>
     </section>
@@ -1106,8 +1111,8 @@ function startAutoScroll() {
   const content = document.getElementById('scrollContent');
   const contentHeight = content.scrollHeight;
   const viewportHeight = window.innerHeight;
-  // 滚动速度：每秒120像素，舒缓流畅
-  const duration = (contentHeight - viewportHeight) / 120;
+  // 滚动速度：每秒100像素，舒缓流畅
+  const duration = (contentHeight - viewportHeight) / 100;
   
   content.style.animationDuration = duration + 's';
   content.classList.add('auto-scrolling');
