@@ -978,12 +978,58 @@ function setConfigValue(path, value) {
   }
 }
 
+/* ========== 图片压缩 ========== */
+function compressImage(file, maxWidth, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = (maxWidth / width) * height;
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ========== 上传图片到图床（catbox.moe，免费无需注册） ========== */
+async function uploadToImageHost(blob) {
+  const formData = new FormData();
+  formData.append('reqtype', 'fileupload');
+  formData.append('fileToUpload', blob, 'photo.jpg');
+  
+  const response = await fetch('https://catbox.moe/user/api.php', {
+    method: 'POST',
+    body: formData
+  });
+  
+  if (!response.ok) throw new Error('上传失败');
+  const url = await response.text();
+  if (!url.startsWith('http')) throw new Error('上传失败: ' + url);
+  return url.trim();
+}
+
 /* ========== 图片更换 ========== */
 function pickImage(key) {
   if (!editMode) return;
   currentImgKey = key;
-  // 让用户选择：上传本地图片 或 输入图片网址
-  if (confirm('点击"确定"上传手机里的图片（仅自己可见）\n点击"取消"输入图片网址（可分享给好友）')) {
+  if (confirm('点击"确定"上传手机里的图片（自动上传到图床，好友也能看到）\n点击"取消"输入图片网址')) {
     document.getElementById('fileInput').click();
   } else {
     const url = prompt('请输入图片网址（以http开头）：', CONFIG.photos[key] || '');
@@ -999,19 +1045,41 @@ function pickImage(key) {
   }
 }
 
-document.getElementById('fileInput').addEventListener('change', function(e) {
+document.getElementById('fileInput').addEventListener('change', async function(e) {
   const file = e.target.files[0];
   if (!file || !currentImgKey) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    const base64 = ev.target.result;
-    CONFIG.photos[currentImgKey] = base64;
+  
+  showToast('正在处理图片...');
+  
+  try {
+    // 压缩图片（宽度最大800px，质量70%）
+    const compressedBlob = await compressImage(file, 800, 0.7);
+    
+    // 上传到图床
+    showToast('正在上传图片...');
+    const imageUrl = await uploadToImageHost(compressedBlob);
+    
+    // 用URL替换（这样分享链接里包含URL，好友也能看到）
+    CONFIG.photos[currentImgKey] = imageUrl;
     const scrollPos = window.scrollY;
     render();
     window.scrollTo(0, scrollPos);
-    showToast('图片已更换，记得点保存');
-  };
-  reader.readAsDataURL(file);
+    showToast('图片已上传，好友也能看到！');
+  } catch(err) {
+    console.error('图床上传失败，使用本地图片:', err);
+    // 上传失败，降级为base64（仅自己可见）
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const base64 = ev.target.result;
+      CONFIG.photos[currentImgKey] = base64;
+      const scrollPos = window.scrollY;
+      render();
+      window.scrollTo(0, scrollPos);
+      showToast('图片已更换（图床上传失败，仅自己可见）');
+    };
+    reader.readAsDataURL(file);
+  }
+  
   e.target.value = '';
 });
 
@@ -1111,8 +1179,8 @@ function startAutoScroll() {
   const content = document.getElementById('scrollContent');
   const contentHeight = content.scrollHeight;
   const viewportHeight = window.innerHeight;
-  // 滚动速度：每秒100像素，舒缓流畅
-  const duration = (contentHeight - viewportHeight) / 100;
+  // 滚动速度：每秒70像素，舒缓流畅
+  const duration = (contentHeight - viewportHeight) / 70;
   
   content.style.animationDuration = duration + 's';
   content.classList.add('auto-scrolling');
