@@ -44,13 +44,6 @@ body {
   will-change: transform;
   transition: none;
 }
-.scroll-content.auto-scrolling {
-  animation: smoothScroll linear infinite;
-}
-@keyframes smoothScroll {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(calc(-100% + 100vh)); }
-}
 
 .page-wrap {
   max-width: 480px;
@@ -1119,12 +1112,38 @@ function toggleMusic() {
   musicPlaying = !musicPlaying;
 }
 
-/* ========== 自动滚动（CSS动画，丝滑流畅） ========== */
+/* ========== 自动滚动（JavaScript控制，流畅且支持手动滑动） ========== */
 let autoScrolling = false;
 let userScrolling = false;
-let userScrollTimer = null;
+let currentY = 0; // 当前滚动位置
+let scrollSpeed = 70; // 每秒70像素
+let lastTime = 0;
 let touchStartY = 0;
-let currentTranslate = 0;
+let touchStartYPos = 0; // 触摸开始时的滚动位置
+let rafId = null;
+
+function scrollLoop(timestamp) {
+  if (!autoScrolling) return;
+  
+  if (!userScrolling && !editMode) {
+    const deltaTime = (timestamp - lastTime) / 1000;
+    currentY -= scrollSpeed * deltaTime;
+    
+    const content = document.getElementById('scrollContent');
+    const contentHeight = content.scrollHeight;
+    const viewportHeight = window.innerHeight;
+    const maxY = -(contentHeight - viewportHeight);
+    
+    if (currentY <= maxY) {
+      currentY = 0; // 循环滚动
+    }
+    
+    content.style.transform = `translateY(${currentY}px)`;
+  }
+  
+  lastTime = timestamp;
+  rafId = requestAnimationFrame(scrollLoop);
+}
 
 function toggleAutoScroll() {
   const btn = document.getElementById('scrollBtn');
@@ -1142,37 +1161,25 @@ function toggleAutoScroll() {
 function startAutoScroll() {
   if (editMode) return;
   autoScrolling = true;
-  const content = document.getElementById('scrollContent');
-  const contentHeight = content.scrollHeight;
-  const viewportHeight = window.innerHeight;
-  // 滚动速度：每秒70像素，舒缓流畅
-  const duration = (contentHeight - viewportHeight) / 70;
-  
-  content.style.animationDuration = duration + 's';
-  content.classList.add('auto-scrolling');
-  content.style.animationPlayState = 'running';
+  lastTime = performance.now();
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(scrollLoop);
 }
 
 function stopAutoScroll() {
   autoScrolling = false;
-  const content = document.getElementById('scrollContent');
-  if (content) {
-    content.style.animationPlayState = 'paused';
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
   }
 }
 
-// 用户触摸开始 - 暂停自动滚动
+// 用户触摸开始 - 记录位置，不暂停自动滚动（只是标记用户正在滑动）
 document.addEventListener('touchstart', (e) => {
   if (!autoScrolling || editMode) return;
   touchStartY = e.touches[0].clientY;
+  touchStartYPos = currentY;
   userScrolling = true;
-  const content = document.getElementById('scrollContent');
-  content.style.animationPlayState = 'paused';
-  
-  // 获取当前动画位置
-  const computed = window.getComputedStyle(content);
-  const matrix = new DOMMatrix(computed.transform);
-  currentTranslate = matrix.m42;
 }, { passive: true });
 
 // 用户触摸移动 - 手动拖动
@@ -1182,52 +1189,32 @@ document.addEventListener('touchmove', (e) => {
   const content = document.getElementById('scrollContent');
   const contentHeight = content.scrollHeight;
   const viewportHeight = window.innerHeight;
-  const maxTranslate = -(contentHeight - viewportHeight);
+  const maxY = -(contentHeight - viewportHeight);
   
-  let newTranslate = currentTranslate + deltaY;
-  newTranslate = Math.max(maxTranslate, Math.min(0, newTranslate));
-  content.style.transform = `translateY(${newTranslate}px)`;
+  currentY = Math.max(maxY, Math.min(0, touchStartYPos + deltaY));
+  content.style.transform = `translateY(${currentY}px)`;
 }, { passive: true });
 
-// 用户触摸结束 - 恢复自动滚动
+// 用户触摸结束 - 恢复自动滚动（从当前位置继续）
 document.addEventListener('touchend', () => {
   if (!autoScrolling || !userScrolling || editMode) return;
   userScrolling = false;
-  
-  // 从当前位置继续动画
-  setTimeout(() => {
-    if (autoScrolling && !editMode) {
-      const content = document.getElementById('scrollContent');
-      content.style.animationPlayState = 'running';
-    }
-  }, 500);
+  lastTime = performance.now();
 }, { passive: true });
 
 // 鼠标滚轮支持
 document.addEventListener('wheel', (e) => {
   if (!autoScrolling || editMode) return;
   e.preventDefault();
+  
   const content = document.getElementById('scrollContent');
-  content.style.animationPlayState = 'paused';
-  
-  const computed = window.getComputedStyle(content);
-  const matrix = new DOMMatrix(computed.transform);
-  currentTranslate = matrix.m42;
-  
   const contentHeight = content.scrollHeight;
   const viewportHeight = window.innerHeight;
-  const maxTranslate = -(contentHeight - viewportHeight);
+  const maxY = -(contentHeight - viewportHeight);
   
-  let newTranslate = currentTranslate - e.deltaY;
-  newTranslate = Math.max(maxTranslate, Math.min(0, newTranslate));
-  content.style.transform = `translateY(${newTranslate}px)`;
-  
-  if (userScrollTimer) clearTimeout(userScrollTimer);
-  userScrollTimer = setTimeout(() => {
-    if (autoScrolling && !editMode) {
-      content.style.animationPlayState = 'running';
-    }
-  }, 800);
+  currentY = Math.max(maxY, Math.min(0, currentY - e.deltaY));
+  content.style.transform = `translateY(${currentY}px)`;
+  lastTime = performance.now();
 }, { passive: false });
 
 /* 启动 */
